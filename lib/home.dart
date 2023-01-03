@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'firstpage.dart';
+import 'list.dart';
 
 class Hom extends StatefulWidget {
   const Hom({Key? key}) : super(key: key);
@@ -12,38 +12,84 @@ class Hom extends StatefulWidget {
 }
 
 class _HomState extends State<Hom> {
-  TextEditingController price=TextEditingController();
-  TextEditingController purpo=TextEditingController();
-  var amount;
-  var purpose;
-  Future<void> getData()async {
-    SharedPreferences spname = await SharedPreferences.getInstance();
-    amount = spname.getString('amount');
-    purpose = spname.getString('purpose');
+  Future <dynamic> getData() async {
+    await Con();
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
+        child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              height: 200,
-              width: 200,
+            SizedBox(height: 500,
               child: FutureBuilder(
-                future: getData(),
-                builder: (context, snapshot) {
-                  return Column(
-                    children: [
-                      Text('$amount'),
-                      Text('$purpose'),
-                    ],
-                  );
-              },),
-            ),
+              future: getData(),
+              builder: (context, snapshot) {
+                if (Con.det.isNotEmpty) {
+                    return
+                      ListView.builder(
+                        itemCount: Con.det.length,
+                        itemBuilder: (context, index) {
+                          return
+                          Row(mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(30),
+                                child: Card(
+                                  child: Container(
+                                    height: 100,
+                                    width: 300,
+                                    color: Colors.tealAccent,
+                                    child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 60,
+                                            ),
+                                            Text('Amount  :  ₹', style: TextStyle(
+                                              fontWeight: FontWeight.bold,)),
+                                            Text(Con.det[index]['price'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,)),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 60,
+                                            ),
+                                            Text('Purpose  :  ', style: TextStyle(
+                                              fontWeight: FontWeight.bold,)),
+                                            Text(Con.det[index]['purpose'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,)),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                      );
 
-            Column(mainAxisAlignment: MainAxisAlignment.end,
-              children: [
+                  }
+                else {
+                  return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(50),
+                        child: Text('Add Data',
+                          style: TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold),),
+                      ));
+                }
+              }
+              ),
+            ),
                 Row(mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Padding(
@@ -58,8 +104,6 @@ class _HomState extends State<Hom> {
                     ),
                   ],
                 ),
-              ],
-            ),
           ],
         ),
       ),
